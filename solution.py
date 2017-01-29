@@ -23,9 +23,17 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
-    # fdf
     # Find all instances of naked twins
-    # Eliminate the naked twins as possibilities for their peers
+    for unit in unitlist:   # Iterate through all units
+        possible_naked_twins_values = [values[box] for box in unit if len(values[box]) == 2]  # boxes that have 2 values in the unit
+        naked_twins_values = [value for value in possible_naked_twins_values if possible_naked_twins_values.count(value) > 1]  # boxes with the same 2 values (naked twins)
+        # Eliminate the naked twins as possibilities for their peers
+        for naked_twin_value in naked_twins_values:
+            for peer in unit:  # iterate through naked value peers
+                if len(values[peer])>2:  # filter peers that have length more than 2, so that the original naked twins are not removed
+                    values = assign_value(values, peer, values[peer].replace(naked_twin_value[0], ''))  # remove from peer's value first value of naked twin
+                    values = assign_value(values, peer, values[peer].replace(naked_twin_value[1], ''))  # remove from peer's value second value of naked twin
+    return values
 
 
 def cross(a, b):
@@ -123,6 +131,7 @@ def reduce_puzzle(values):
         solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
         values = eliminate(values)
         values = only_choice(values)
+        values = naked_twins(values)
         solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
         stalled = solved_values_before == solved_values_after
         if len([box for box in values.keys() if len(values[box]) == 0]):
