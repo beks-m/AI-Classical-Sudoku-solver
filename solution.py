@@ -45,7 +45,8 @@ boxes = cross(rows, cols)
 row_units = [cross(r, cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
 square_units = [cross(rs, cs) for rs in ('ABC', 'DEF', 'GHI') for cs in ('123', '456', '789')]
-unitlist = row_units + column_units + square_units
+diagonal_units = [['A1', 'B2', 'C3', 'D4', 'E5', 'F6', 'G7', 'H8', 'I9'], ['A9', 'B8', 'C7', 'D6', 'E5', 'F4', 'G3', 'H2', 'I1']]
+unitlist = row_units + column_units + square_units + diagonal_units
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s], [])) - {s}) for s in boxes)
 
@@ -77,10 +78,13 @@ def display(values):
     Args:
         values(dict): The sudoku in dictionary form
     """
-    width = 1+max(len(values[s]) for s in boxes)
-    line = '+'.join(['-'*(width*3)]*3)
-    for r in rows:
-        print(''.join(values[r+c].center(width)+('|' if c in '36' else '')
+    if not values:
+        print('There is no solution')
+    else:
+        width = 1+max(len(values[s]) for s in boxes)
+        line = '+'.join(['-'*(width*3)]*3)
+        for r in rows:
+            print(''.join(values[r+c].center(width)+('|' if c in '36' else '')
                       for c in cols))
         if r in 'CF':
             print(line)
@@ -174,6 +178,8 @@ def solve(grid):
 
 if __name__ == '__main__':
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
+    print(diagonal_units)
+    print(column_units)
     display(solve(diag_sudoku_grid))
 
     # noinspection PyBroadException
