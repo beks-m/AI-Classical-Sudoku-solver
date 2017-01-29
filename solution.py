@@ -18,7 +18,7 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
-
+    # fdf
     # Find all instances of naked twins
     # Eliminate the naked twins as possibilities for their peers
 
